@@ -2,6 +2,14 @@ FROM jboss/wildfly:9.0.2.Final
 
 ENV POSTGRESQL_VERSION 9.4-1201-jdbc41
 
+ARG DB_HOST=localhost
+ARG DB_NAME=ys
+ARG DB_USER=egokia
+ARG DB_PASS=eG0kia
+ARG USER=egokia
+ARG USER_PASS=eG0kia
+ARG DATASOURCE=ysDS
+
 # adds a management user with the following credentials: admin:admin
 # if you want to add an application user, use the '-a' option
 RUN /opt/jboss/wildfly/bin/add-user.sh admin admin --silent \
