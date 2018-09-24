@@ -2,16 +2,11 @@ FROM jboss/wildfly:9.0.2.Final
 
 ENV POSTGRESQL_VERSION 9.4-1201-jdbc41
 
-ARG DB_HOST=localhost
-ARG DB_NAME=ys
-ARG DB_USER=egokia
-ARG DB_PASS=eG0kia
-
 # adds a management user with the following credentials: admin:admin
 # if you want to add an application user, use the '-a' option
 RUN /opt/jboss/wildfly/bin/add-user.sh admin admin --silent \
-    && /opt/jboss/wildfly/bin/add-user.sh -s -u egokia -p "eG0kia" \
-    && /opt/jboss/wildfly/bin/add-user.sh -s -u egokia -p "eG0kia" -a --role guest
+    && /opt/jboss/wildfly/bin/add-user.sh -s -u ${USER} -p ${USER_PASS} \
+    && /opt/jboss/wildfly/bin/add-user.sh -s -u ${USER} -p ${USER_PASS} -a --role guest
 
 ADD jdbc /opt/jdbc
 ADD config /opt/config
@@ -43,7 +38,7 @@ RUN /bin/sh -c '$JBOSS_HOME/bin/standalone.sh &' && \
       cd /tmp && \
       curl --location --output postgresql-${POSTGRESQL_VERSION}.jar --url http://search.maven.org/remotecontent?filepath=org/postgresql/postgresql/${POSTGRESQL_VERSION}/postgresql-${POSTGRESQL_VERSION}.jar && \
       $JBOSS_HOME/bin/jboss-cli.sh --connect --command="deploy /tmp/postgresql-${POSTGRESQL_VERSION}.jar" && \
-      $JBOSS_HOME/bin/jboss-cli.sh --connect --command="xa-data-source add --name=ysDS --jndi-name=java:jboss/datasources/ysDS --user-name=${DB_USER} --password=${DB_PASS} --driver-name=postgresql-9.4-1201-jdbc41.jar --xa-datasource-class=org.postgresql.xa.PGXADataSource --xa-datasource-properties=ServerName=${DB_HOST},PortNumber=5432,DatabaseName=${DB_NAME} --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter" && \
+      $JBOSS_HOME/bin/jboss-cli.sh --connect --command="xa-data-source add --name=${DATASOURCE} --jndi-name=java:jboss/datasources/${DATASOURCE} --user-name=${DB_USER} --password=${DB_PASS} --driver-name=postgresql-9.4-1201-jdbc41.jar --xa-datasource-class=org.postgresql.xa.PGXADataSource --xa-datasource-properties=ServerName=${DB_HOST},PortNumber=5432,DatabaseName=${DB_NAME} --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter" && \
       $JBOSS_HOME/bin/jboss-cli.sh --connect --command=:shutdown && \
       rm -rf $JBOSS_HOME/standalone/configuration/standalone_xml_history/ $JBOSS_HOME/standalone/log/* && \
       rm /tmp/postgresql-9.4*.jar && \
