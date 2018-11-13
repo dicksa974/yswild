@@ -8,6 +8,8 @@ ARG DB_USER=egokia
 ARG DB_PASS=eG0kia
 ARG USER=egokia
 ARG USER_PASS=eG0kia
+ARG NAYA_USER=naya
+ARG NAYA_PASS=GP5c6g
 ARG DATASOURCE=ysDS
 
 # adds a management user with the following credentials: admin:admin
@@ -15,6 +17,7 @@ ARG DATASOURCE=ysDS
 RUN /opt/jboss/wildfly/bin/add-user.sh admin admin --silent \
     && /opt/jboss/wildfly/bin/add-user.sh -s -u ${USER} -p ${USER_PASS} \
     && /opt/jboss/wildfly/bin/add-user.sh -s -u ${USER} -p ${USER_PASS} -a --role guest
+    && /opt/jboss/wildfly/bin/add-user.sh -s -u ${NAYA_USER} -p ${NAYA_PASS} -a --role guest
 
 ADD jdbc /opt/jdbc
 ADD config /opt/config
