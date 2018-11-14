@@ -16,7 +16,7 @@ ARG DATASOURCE=ysDS
 # if you want to add an application user, use the '-a' option
 RUN /opt/jboss/wildfly/bin/add-user.sh admin admin --silent \
     && /opt/jboss/wildfly/bin/add-user.sh -s -u ${USER} -p ${USER_PASS} \
-    && /opt/jboss/wildfly/bin/add-user.sh -s -u ${USER} -p ${USER_PASS} -a --role guest
+    && /opt/jboss/wildfly/bin/add-user.sh -s -u ${USER} -p ${USER_PASS} -a --role guest \
     && /opt/jboss/wildfly/bin/add-user.sh -s -u ${NAYA_USER} -p ${NAYA_PASS} -a --role guest
 
 ADD jdbc /opt/jdbc
